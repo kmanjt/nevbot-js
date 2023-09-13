@@ -43,13 +43,15 @@ client.on("messageCreate", async (message) => {
     message.reply("Pong!");
   }
 });
+// Create an object to keep track of notifications
+const notifiedClasses = {};
 
-// Notify 30 and 15 minutes before class
 setInterval(async () => {
   const todayClasses = getTodayClasses();
   const currentTime = new Date();
 
   // Loop through each time slot for today's classes
+  console.log("Checking for classes...");
   for (const [time, classInfo] of Object.entries(todayClasses)) {
     const hour = parseInt(time.substring(0, 2), 10);
     const minute = parseInt(time.substring(2, 4), 10);
@@ -62,15 +64,43 @@ setInterval(async () => {
       minute
     );
 
-    const timeDifference = (classTime - currentTime) / 1000 / 60; // Time difference in minutes
+    const timeDifference = Math.round((classTime - currentTime) / 1000 / 60); // Time difference in whole minutes
 
-    if (timeDifference === 30 || timeDifference === 15) {
-      // Send notification
+    // Create a unique identifier for each class
+    const classIdentifier = `${classInfo.module}-${classTime.toISOString()}`;
+
+    if (
+      timeDifference <= 30 &&
+      timeDifference >= 25 &&
+      !notifiedClasses[classIdentifier]?.notifiedAt30
+    ) {
+      // Send 30-minute notification
       const channel = client.channels.cache.get("1151460014968545350");
       if (channel) {
         channel.send(
-          `Class ${classInfo.module} starts in ${timeDifference} minutes.`
+          `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
         );
+        // Mark this class as notified at 30 minutes
+        notifiedClasses[classIdentifier] = {
+          ...notifiedClasses[classIdentifier],
+          notifiedAt30: true,
+        };
+      }
+    } else if (
+      timeDifference === 15 &&
+      !notifiedClasses[classIdentifier]?.notifiedAt15
+    ) {
+      // Send 15-minute notification
+      const channel = client.channels.cache.get("1151460014968545350");
+      if (channel) {
+        channel.send(
+          `@everyone Class ${classInfo.module} starts in 15 minutes in building ${classInfo.building} room ${classInfo.room}`
+        );
+        // Mark this class as notified at 15 minutes
+        notifiedClasses[classIdentifier] = {
+          ...notifiedClasses[classIdentifier],
+          notifiedAt15: true,
+        };
       }
     }
   }
