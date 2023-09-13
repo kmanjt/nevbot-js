@@ -13,7 +13,7 @@ const client = new Client({
   intents: [
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.MessageContent,
   ],
 });
@@ -28,6 +28,17 @@ client.on("messageCreate", async (message) => {
 
     message.channel.send({ embeds: [embed] });
   }
+});
+
+client.on("guildMemberAdd", (member) => {
+  const channel = member.guild.channels.cache.find(
+    (ch) => ch.name === "general"
+  );
+  if (!channel) {
+    console.log("Channel not found");
+    return;
+  }
+  channel.send(`Welcome to the server, ${member}`);
 });
 
 client.on("messageCreate", async (message) => {
@@ -66,6 +77,12 @@ setInterval(async () => {
 
     const timeDifference = Math.round((classTime - currentTime) / 1000 / 60); // Time difference in whole minutes
 
+    const channel = client.channels.cache.find((ch) => ch.name === "general");
+    if (!channel) {
+      console.log("Channel not found");
+      return;
+    }
+
     // Create a unique identifier for each class
     const classIdentifier = `${classInfo.module}-${classTime.toISOString()}`;
 
@@ -75,33 +92,27 @@ setInterval(async () => {
       !notifiedClasses[classIdentifier]?.notifiedAt30
     ) {
       // Send 30-minute notification
-      const channel = client.channels.cache.get("1151460014968545350");
-      if (channel) {
-        channel.send(
-          `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
-        );
-        // Mark this class as notified at 30 minutes
-        notifiedClasses[classIdentifier] = {
-          ...notifiedClasses[classIdentifier],
-          notifiedAt30: true,
-        };
-      }
+      channel.send(
+        `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
+      );
+      // Mark this class as notified at 30 minutes
+      notifiedClasses[classIdentifier] = {
+        ...notifiedClasses[classIdentifier],
+        notifiedAt30: true,
+      };
     } else if (
       timeDifference === 15 &&
       !notifiedClasses[classIdentifier]?.notifiedAt15
     ) {
       // Send 15-minute notification
-      const channel = client.channels.cache.get("1151460014968545350");
-      if (channel) {
-        channel.send(
-          `@everyone Class ${classInfo.module} starts in 15 minutes in building ${classInfo.building} room ${classInfo.room}`
-        );
-        // Mark this class as notified at 15 minutes
-        notifiedClasses[classIdentifier] = {
-          ...notifiedClasses[classIdentifier],
-          notifiedAt15: true,
-        };
-      }
+      channel.send(
+        `@everyone Class ${classInfo.module} starts in 15 minutes in building ${classInfo.building} room ${classInfo.room}`
+      );
+      // Mark this class as notified at 15 minutes
+      notifiedClasses[classIdentifier] = {
+        ...notifiedClasses[classIdentifier],
+        notifiedAt15: true,
+      };
     }
   }
 }, 60 * 1000); // Run every minute
