@@ -93,18 +93,25 @@
     "0900": {
       "module": "CA314 - OO Analysis & Design",
       "duration": 60,
-      "type": "Tutorial",
+      "type": "Lecture",
       "building": "Science Building",
       "room": "XG22"
     },
     "1000": {
       "module": "CA320 - Computability and Complexibility",
       "duration": 60,
+      "type": "Lecture",
+      "building": "Business Building",
+      "room": "QG13"
+    },
+    "1200": {
+      "module": "CA320 - Computability and Complexibility",
+      "duration": 120,
       "type": "Lab",
       "building": "McNulty Computer Labs",
       "room": "LG25, LG26, LG27"
     },
-    "1200": {
+    "1400": {
       "module": "CA341 - Comparative Programming Languages",
       "duration": 120,
       "type": "Green Group Flip Class",
