@@ -91,22 +91,31 @@ setInterval(async () => {
   const todayClasses = getTodayClasses();
   const currentTime = new Date();
 
-  todayClasses.forEach((entry) => {
+  // Loop through each time slot for today's classes
+  for (const [time, classInfo] of Object.entries(todayClasses)) {
+    const hour = parseInt(time.substring(0, 2), 10);
+    const minute = parseInt(time.substring(2, 4), 10);
+
     const classTime = new Date(
       currentTime.getFullYear(),
       currentTime.getMonth(),
       currentTime.getDate(),
-      entry.hour,
-      entry.minute
+      hour,
+      minute
     );
 
     const timeDifference = (classTime - currentTime) / 1000 / 60; // Time difference in minutes
 
     if (timeDifference === 30 || timeDifference === 15) {
       // Send notification
-      client.send(`Class ${entry.name} starts in ${timeDifference} minutes.`);
+      const channel = client.channels.cache.get("YOUR_CHANNEL_ID");
+      if (channel) {
+        channel.send(
+          `Class ${classInfo.module} starts in ${timeDifference} minutes.`
+        );
+      }
     }
-  });
+  }
 }, 60 * 1000); // Run every minute
 
 // Login to Discord
