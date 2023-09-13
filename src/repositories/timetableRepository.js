@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { initializeClasses } = require("./sqlRepository");
 
 const readTimetable = () => {
   const timetablePath = path.join(__dirname, "../config", "timetable.json");
@@ -21,7 +22,9 @@ const getTodayClasses = () => {
   ];
   const dayOfWeek = days[today.getDay()];
 
-  return timetable[dayOfWeek] || {}; // return an empty object if the day is not in the timetable
+  const todayClasses = timetable[dayOfWeek] || {}; // return an empty object if the day is not in the timetable
+
+  return todayClasses;
 };
 
 const getWeekClasses = () => {
