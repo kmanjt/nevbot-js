@@ -18,7 +18,7 @@
       "module": "CA318 - Advanced Algorithms and A.I. Search",
       "duration": 60,
       "type": "Lecture",
-      "building": "Henry Grattan",
+      "building": "Henry Grattan Building",
       "room": "CG12"
     },
     "1600": {
@@ -85,7 +85,7 @@
       "module": "CA314 - OO Analysis & Design",
       "duration": 60,
       "type": "Lecture",
-      "building": "Henry Grattan",
+      "building": "Henry Grattan Building",
       "room": "CG12"
     }
   },

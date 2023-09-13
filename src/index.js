@@ -20,24 +20,7 @@ client.once("ready", (c) => {
 
 client.on("messageCreate", async (message) => {
   if (message.content === "!today") {
-    const todayClasses = getTodayClasses();
-    const dateObj = new Date();
-    // set day in English
-    const day = new Intl.DateTimeFormat("en-EU", { weekday: "long" }).format(
-      dateObj
-    );
-    const date = dateObj.toLocaleDateString("en-EU");
-    const embed = new EmbedBuilder()
-      .setColor(0x0099ff)
-      .setTitle(`${day}-${date} COMSCI3 Classes`)
-      .setTimestamp()
-      .setFooter({ text: "Timetable" });
-
-    for (const [time, classInfo] of Object.entries(todayClasses)) {
-      const fieldName = `${time} - ${classInfo.module}`;
-      const fieldValue = `Duration: ${classInfo.duration} mins\nType: ${classInfo.type}\nBuilding: ${classInfo.building}\nRoom: ${classInfo.room}`;
-      embed.addFields({ name: fieldName, value: fieldValue });
-    }
+    const embed = createDailyTimetableEmbed();
 
     message.channel.send({ embeds: [embed] });
   }
@@ -120,3 +103,24 @@ setInterval(async () => {
 
 // Login to Discord
 client.login(process.env.BOT_TOKEN);
+function createDailyTimetableEmbed() {
+  const todayClasses = getTodayClasses();
+  const dateObj = new Date();
+  // set day in English
+  const day = new Intl.DateTimeFormat("en-EU", { weekday: "long" }).format(
+    dateObj
+  );
+  const date = dateObj.toLocaleDateString("en-EU");
+  const embed = new EmbedBuilder()
+    .setColor(0x0099ff)
+    .setTitle(`${day}-${date} COMSCI3 Classes`)
+    .setTimestamp()
+    .setFooter({ text: "Timetable" });
+
+  for (const [time, classInfo] of Object.entries(todayClasses)) {
+    const fieldName = `${time} - ${classInfo.module}`;
+    const fieldValue = `Duration: ${classInfo.duration} mins\nType: ${classInfo.type}\nBuilding: ${classInfo.building}\nRoom: ${classInfo.room}`;
+    embed.addFields({ name: fieldName, value: fieldValue });
+  }
+  return embed;
+}
