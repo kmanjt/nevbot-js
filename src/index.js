@@ -1,6 +1,10 @@
 require("dotenv").config(); // Load environment variables from .env file
 const { Client, IntentsBitField } = require("discord.js");
-const { db, initializeClasses } = require("./repositories/sqlRepository");
+const {
+  db,
+  initializeClasses,
+  insertTask,
+} = require("./repositories/sqlRepository");
 const {
   getTodayClasses,
   getWeekClasses,
@@ -9,6 +13,7 @@ const {
   createDailyTimetableEmbed,
   createWeeklyTimetableEmbed,
 } = require("./utils/discordUtils");
+const { isValidDate, isDateWithinLimit } = require("./utils/miscUtils");
 
 const client = new Client({
   intents: [
@@ -16,6 +21,7 @@ const client = new Client({
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.DirectMessages,
   ],
 });
 
@@ -32,6 +38,21 @@ client.on("messageCreate", async (message) => {
     const embed = createDailyTimetableEmbed();
 
     message.channel.send({ embeds: [embed] });
+  }
+});
+
+// Request should look like:
+// task, dueDate, lastNotified, completed, late
+client.on("messageCreate", async (message) => {
+  const tokens = message.content.split(" ");
+  if (tokens.slice(0, 2).join(" ") === "!add task") {
+    if (!isValidDate(tokens[3]) && !isDateWithinLimit(tokens[3])) {
+      console.log("Date for a given add task request was not valid!");
+      message.reply(
+        "Please enter a valid date within the next month. The correct command should look like: "
+      );
+    }
+    insertTask(tokens[2]);
   }
 });
 
