@@ -24,15 +24,9 @@ db.serialize(() => {
   );
 
   db.run(
-    "CREATE TABLE IF NOT EXISTS notifyUsers (userID TEXT PRIMARY KEY, taskID INTEGER, FOREIGN KEY(taskID) REFERENCES tasks(taskID))"
+    "CREATE TABLE IF NOT EXISTS notifyUsers (userID TEXT, taskID INTEGER, FOREIGN KEY(taskID) REFERENCES tasks(taskID))"
   );
 });
-
-/**
- * Fetch tasks associated from the database associated with a user
- *
- *
- */
 
 /**
  * Inserts a new task into the database and associates it with a user.

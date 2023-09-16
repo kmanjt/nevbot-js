@@ -1,18 +1,24 @@
 function isValidDate(dateString) {
   const date = new Date(dateString);
-  const currentDate = new Date();
-  return !isNaN(date) && date > currentDate;
+  return !isNaN(date);
 }
 
 function isDateWithinLimit(dateString) {
   const date = new Date(dateString);
   const todayDate = new Date();
-  const nextMonthDate = new Date();
-  nextMonthDate.setMonth(todayDate.getMonth() + 1);
-  const oneYearFromNow = new Date();
-  oneYearFromNow.setFullYear(todayDate.getFullYear() + 1);
-
-  return date >= todayDate && date <= nextMonthDate && date <= oneYearFromNow;
+  if (
+    date.getFullYear() <= todayDate.getFullYear() &&
+    date.getMonth() <= todayDate.getMonth() + 1
+  ) {
+    return true;
+  }
+  return false;
 }
 
-module.exports = { isValidDate, isDateWithinLimit };
+function isFutureDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  return date > now;
+}
+
+module.exports = { isValidDate, isDateWithinLimit, isFutureDate };
