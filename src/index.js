@@ -11,11 +11,7 @@ const {
   createDailyTimetableEmbed,
   createWeeklyTimetableEmbed,
 } = require("./utils/discordUtils");
-const {
-  isValidDate,
-  isDateWithinLimit,
-  isFutureDate,
-} = require("./utils/miscUtils");
+const eventHandler = require("./handlers/eventHandler");
 
 const client = new Client({
   intents: [
@@ -27,112 +23,19 @@ const client = new Client({
   ],
 });
 
-client.once("ready", (c) => {
-  console.log(`Bot is online and logged in as ${c.user.tag}!`);
+eventHandler(client);
 
-  // Initialize the database with today's classes
-  const todayClasses = getTodayClasses();
-  initializeClasses(todayClasses);
-  sendDailyReminders();
-  // Registering the /addtask command
-  client.application.commands.create({
-    name: "addtask",
-    description: "Adds a new task",
-    options: [
-      {
-        name: "description",
-        type: 3,
-        description: "The description of the task",
-        required: true,
-      },
-      {
-        name: "day",
-        type: 4,
-        description: "The day the task is due (DD)",
-        required: true,
-      },
-      {
-        name: "month",
-        type: 4,
-        description: "The month the task is due (MM)",
-        required: true,
-      },
-      {
-        name: "year",
-        type: 4,
-        description: "The year the task is due (YYYY)",
-        required: true,
-      },
-    ],
-  });
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
-
-  const { commandName } = interaction;
-
-  if (commandName === "addtask") {
-    const taskDescription = interaction.options.getString("description");
-    const day = interaction.options.getInteger("day");
-    const month = interaction.options.getInteger("month");
-    const year = interaction.options.getInteger("year");
-
-    const dueDate = new Date(year, month - 1, day); // month is 0-indexed
-
-    const userID = interaction.user.id;
-
-    const dateValid = isValidDate(dueDate);
-    const dateWithinLimit = isDateWithinLimit(dueDate);
-    const futureDate = isFutureDate(dueDate);
-
-    if (!dateValid || !dateWithinLimit || !futureDate) {
-      console.log("Date for a given add task request was not valid!");
-      console.log(
-        `Date valid: ${dateValid}, within limit: ${dateWithinLimit}, future: ${futureDate}`
-      );
-      interaction.reply(
-        "Please enter a valid future date within the next month. The correct command should look like: /addtask [description] [dueDate]"
-      );
-      return;
-    }
-
-    // Insert the task into the database
-    insertTask(taskDescription, dueDate, userID);
-    interaction.reply("Task added!");
-  }
-});
+// Initialize the database with today's classes
+const todayClasses = getTodayClasses();
+initializeClasses(todayClasses);
+sendDailyReminders();
+// Registering the /addtask command
 
 client.on("messageCreate", async (message) => {
   if (message.content === "!today") {
     const embed = createDailyTimetableEmbed();
 
     message.channel.send({ embeds: [embed] });
-  }
-});
-
-client.on("messageCreate", async (message) => {
-  const tokens = message.content.split(" ");
-  if (tokens.slice(0, 2).join(" ") === "!add task") {
-    const taskDescription = tokens[2];
-    const dueDate = tokens[3];
-    const userID = message.author.id;
-
-    if (
-      !isValidDate(dueDate) ||
-      !isDateWithinLimit(dueDate) ||
-      !isFutureDate(dueDate)
-    ) {
-      console.log("Date for a given add task request was not valid!");
-      message.reply(
-        "Please enter a valid future date within the next month. The correct command should look like: !add task [description] [dueDate]"
-      );
-      return;
-    }
-
-    // Insert the task into the database
-    insertTask(taskDescription, dueDate, userID);
-    message.reply("Task added!");
   }
 });
 
@@ -152,12 +55,6 @@ client.on("messageCreate", async (message) => {
     const embed = createWeeklyTimetableEmbed();
 
     message.channel.send({ embeds: [embed] });
-  }
-});
-
-client.on("messageCreate", async (message) => {
-  if (message.content === "!ping") {
-    message.reply("Pong!");
   }
 });
 
