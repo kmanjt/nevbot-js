@@ -40,7 +40,7 @@ module.exports = async (client, interaction) => {
             content: "Not enough permissions to do this command!",
             ephemeral: true,
           });
-          break;
+          return;
         }
       }
     }
@@ -55,7 +55,7 @@ module.exports = async (client, interaction) => {
               "nevbot does not have enough permissions on this server to do that!",
             ephemeral: "true",
           });
-          break;
+          return;
         }
       }
     }

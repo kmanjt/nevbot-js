@@ -22,6 +22,5 @@ module.exports = (exceptions = []) => {
       localCommands.push(commandObject);
     }
   }
-
   return localCommands;
 };
