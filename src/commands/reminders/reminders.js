@@ -18,6 +18,32 @@ module.exports = {
       name: "add",
       type: ApplicationCommandOptionType.Subcommand,
       description: "Adds a new reminder for yourself.",
+      options: [
+        {
+          name: "description",
+          type: ApplicationCommandOptionType.String,
+          description: "The description of the task",
+          required: true,
+        },
+        {
+          name: "day",
+          type: ApplicationCommandOptionType.Integer,
+          description: "The day the task is due (DD)",
+          required: true,
+        },
+        {
+          name: "month",
+          type: ApplicationCommandOptionType.Integer,
+          description: "The month the task is due (MM)",
+          required: true,
+        },
+        {
+          name: "year",
+          type: ApplicationCommandOptionType.Integer,
+          description: "The year the task is due (YYYY)",
+          required: true,
+        },
+      ],
       execute: (client, interaction) => {
         const taskDescription = interaction.options.getString("description");
         const day = interaction.options.getInteger("day");
