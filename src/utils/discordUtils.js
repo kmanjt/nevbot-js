@@ -3,6 +3,7 @@ const {
   getTodayClasses,
   getWeekClasses,
 } = require("../repositories/timetableRepository");
+const { getAllTasksForUser } = require("../repositories/sqlRepository");
 
 function createDailyTimetableEmbed() {
   const todayClasses = getTodayClasses();
@@ -50,7 +51,34 @@ function createWeeklyTimetableEmbed() {
   return embed;
 }
 
+async function createUserTasksEmbed(userId, username) {
+  const tasks = await getAllTasksForUser(userId);
+
+  const embed = new EmbedBuilder()
+    .setTitle(`Tasks Due For ${username}`)
+    .setTimestamp();
+
+  for (const taskObj of tasks) {
+    const { task, dueDate, completed, late } = taskObj;
+    const date = new Date(dueDate);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed in JavaScript
+    const year = date.getFullYear();
+    const due = `${day}/${month}/${year}`;
+
+    const fieldName = `${task}`;
+    const fieldValue = `Due: ${due}\nCompleted: ${
+      completed ? true : false
+    }\nLate: ${late ? true : false}`;
+    embed.addFields({ name: fieldName, value: fieldValue });
+  }
+
+  return embed;
+}
+
 module.exports = {
   createDailyTimetableEmbed,
   createWeeklyTimetableEmbed,
+  createUserTasksEmbed,
 };

@@ -8,7 +8,7 @@ const { ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
   name: "addtask",
-  description: "Adds a new task",
+  description: "Adds a new task for yourself",
   // devOnly: Boolean,
   // testOnly: Boolean,
   options: [

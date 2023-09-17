@@ -71,6 +71,75 @@ const insertTask = (task, dueDate, userID) => {
   });
 };
 
+/**
+ * Deletes a specific task from the database for a given user.
+ *
+ * @param {number} taskID - The ID of the task to be deleted.
+ * @param {string} userID - The ID of the user from whom the task will be deleted.
+ */
+const deleteTask = (taskID, userID) => {
+  // Start a database transaction
+  db.serialize(() => {
+    db.run("BEGIN TRANSACTION");
+
+    // First, delete the association between the user and the task in the notifyUsers table
+    db.run(
+      "DELETE FROM notifyUsers WHERE taskID = ? AND userID = ?",
+      [taskID, userID],
+      function (err) {
+        if (err) {
+          console.error(err.message);
+          return db.run("ROLLBACK");
+        }
+        console.log(
+          `Deleted association for taskID ${taskID} and userID ${userID} from notifyUsers.`
+        );
+
+        // Then, delete the task itself from the tasks table
+        db.run("DELETE FROM tasks WHERE taskID = ?", [taskID], function (err) {
+          if (err) {
+            console.error(err.message);
+            return db.run("ROLLBACK");
+          }
+          console.log(`Deleted task with taskID ${taskID} from tasks.`);
+          db.run("COMMIT");
+        });
+      }
+    );
+  });
+};
+
+const getAllTasksForUser = (userID) => {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT tasks.* 
+      FROM tasks 
+      JOIN notifyUsers ON tasks.taskID = notifyUsers.taskID 
+      WHERE notifyUsers.userID = ?`;
+
+    db.all(query, [userID], (err, rows) => {
+      if (err) {
+        console.error(err.message);
+        reject(err);
+        return;
+      }
+      resolve(rows);
+    });
+  });
+};
+
+const getAllIncompleteTasks = (callback) => {
+  const query = "SELECT * FROM tasks WHERE completed = 0";
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error(err.message);
+      return;
+    }
+    callback(rows);
+  });
+};
+
 const clearDatabase = () => {
   db.run("DELETE FROM notifiedClasses", [], (err) => {
     if (err) {
@@ -84,5 +153,8 @@ module.exports = {
   clearDatabase,
   initializeClasses,
   insertTask,
+  deleteTask,
+  getAllTasksForUser,
+  getAllIncompleteTasks,
   db,
 };
