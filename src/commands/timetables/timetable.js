@@ -27,7 +27,7 @@ module.exports = {
       },
     },
   ],
-  callback: (client, interaction) => {
+  callback: function (client, interaction) {
     const subcommand = interaction.options.getSubcommand();
     this.options
       .find((option) => option.name === subcommand)

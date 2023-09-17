@@ -13,9 +13,9 @@ module.exports = async (client) => {
   guildCommands.forEach((cmd) => console.log(`- ${cmd.name}`));
 
   // // This takes ~1 hour to update
-  // client.application.commands.set([]);
+  //client.application.commands.set([]);
   // // This updates immediately
-  // guild.commands.set([]);
+  //guild.commands.set([]);
 
   // Loop through all guilds the bot is a part of
   for (const [guildId, guild] of client.guilds.cache) {
