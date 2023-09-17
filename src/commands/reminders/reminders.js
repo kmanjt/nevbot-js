@@ -7,6 +7,7 @@ const { createUserTasksEmbed } = require("../../utils/discordUtils");
 const {
   insertTask,
   getAllTasksForUser,
+  markTaskAsComplete,
 } = require("../../repositories/sqlRepository");
 const { ApplicationCommandOptionType } = require("discord.js");
 
@@ -85,6 +86,28 @@ module.exports = {
         }
       },
     },
+    {
+      name: "complete",
+      type: ApplicationCommandOptionType.Subcommand,
+      description: "Mark a task as complete.",
+      execute: async (client, interaction) => {
+        const taskID = interaction.options.getInteger("task_id");
+        const userID = interaction.user.id;
+    
+        // Mark the task as complete in the database
+        await markTaskAsComplete(taskID, userID);
+    
+        interaction.reply("Task marked as complete!");
+      },
+      options: [
+        {
+          name: "task_id",
+          type: ApplicationCommandOptionType.Integer,
+          description: "The ID of the task to mark as complete",
+          required: true,
+        },
+      ],
+    },    
   ],
   callback: function (client, interaction) {
     const subcommand = interaction.options.getSubcommand();
