@@ -56,9 +56,11 @@ module.exports = {
       console.log(
         `Date valid: ${dateValid}, within limit: ${dateWithinLimit}, future: ${futureDate}`
       );
-      interaction.reply(
-        "Please enter a valid future date within the next month. The correct command should look like: /addtask [description] [dueDate]"
-      );
+      interaction.reply({
+        content: `Please enter a valid future date within the next month. The date was valid: ${dateValid}, within limit: ${dateWithinLimit}, in the future: ${futureDate}`,
+        ephemeral: true,
+      });
+
       return;
     }
 

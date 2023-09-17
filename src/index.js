@@ -7,10 +7,7 @@ const {
   clearDatabase,
 } = require("./repositories/sqlRepository");
 const { getTodayClasses } = require("./repositories/timetableRepository");
-const {
-  createDailyTimetableEmbed,
-  createWeeklyTimetableEmbed,
-} = require("./utils/discordUtils");
+
 const eventHandler = require("./handlers/eventHandler");
 
 const client = new Client({
@@ -29,34 +26,6 @@ eventHandler(client);
 const todayClasses = getTodayClasses();
 initializeClasses(todayClasses);
 sendDailyReminders();
-// Registering the /addtask command
-
-client.on("messageCreate", async (message) => {
-  if (message.content === "!today") {
-    const embed = createDailyTimetableEmbed();
-
-    message.channel.send({ embeds: [embed] });
-  }
-});
-
-client.on("guildMemberAdd", (member) => {
-  const channel = member.guild.channels.cache.find(
-    (ch) => ch.name === "general"
-  );
-  if (!channel) {
-    console.log("Channel not found");
-    return;
-  }
-  channel.send(`Welcome to the server, ${member}`);
-});
-
-client.on("messageCreate", async (message) => {
-  if (message.content === "!week") {
-    const embed = createWeeklyTimetableEmbed();
-
-    message.channel.send({ embeds: [embed] });
-  }
-});
 
 setInterval(async () => {
   const todayClasses = getTodayClasses();

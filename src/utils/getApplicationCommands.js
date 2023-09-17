@@ -1,4 +1,7 @@
 module.exports = async (client, guildId) => {
+  console.log(
+    `Fetching commands for ${guildId ? `guild ${guildId}` : "global"}`
+  );
   let applicationCommands;
 
   if (guildId) {
