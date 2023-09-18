@@ -20,13 +20,6 @@
       "type": "Lecture",
       "building": "Henry Grattan Building",
       "room": "CG12"
-    },
-    "1600": {
-      "module": "CA341 - Comparative Programming Languages",
-      "duration": 60,
-      "type": "Lecture",
-      "building": "Science Building",
-      "room": "XG19"
     }
   },
   "Tuesday": {
