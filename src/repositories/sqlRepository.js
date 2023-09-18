@@ -140,6 +140,28 @@ const getAllIncompleteTasks = (callback) => {
   });
 };
 
+const markTaskAsComplete = (taskID, userID) => {
+  return new Promise((resolve, reject) => {
+    db.run(
+      "UPDATE tasks SET completed = 1 WHERE taskID = ? AND EXISTS (SELECT 1 FROM notifyUsers WHERE taskID = ? AND userID = ?)",
+      [taskID, taskID, userID],
+      function (err) {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+          return;
+        }
+        if (this.changes === 0) {
+          reject(new Error("No task found to mark as complete"));
+          return;
+        }
+        resolve();
+      }
+    );
+  });
+};
+
+
 const clearDatabase = () => {
   db.run("DELETE FROM notifiedClasses", [], (err) => {
     if (err) {
@@ -156,5 +178,6 @@ module.exports = {
   deleteTask,
   getAllTasksForUser,
   getAllIncompleteTasks,
+  markTaskAsComplete,
   db,
 };
