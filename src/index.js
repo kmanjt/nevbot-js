@@ -160,14 +160,14 @@ function sendDailyReminders() {
                 `Sending overdue reminder to user ${userID} for task ${taskID}`
               );
               user.send(
-                `You have an overdue task: ${taskDescription}. Please complete it as soon as possible.`
+                `You have an overdue task: ${taskID} - ${taskDescription}. Please complete it as soon as possible. Type /reminders complete and input ${taskID} to mark is as complete.`
               );
             } else {
               console.log(
                 `Sending upcoming task reminder to user ${userID} for task ${taskID}`
               );
               user.send(
-                `You have a task due soon: ${taskDescription}. Due date: ${dueDate}.`
+                `You have a task due soon: ${taskID} - ${taskDescription}. Due date: ${dueDate}. Type /reminders complete and input ${taskID} to mark is as complete.`
               );
             }
           }
