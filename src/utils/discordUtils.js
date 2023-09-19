@@ -59,7 +59,7 @@ async function createUserTasksEmbed(userId, username) {
     .setTimestamp();
 
   for (const taskObj of tasks) {
-    const { task, dueDate, completed, late } = taskObj;
+    const { taskID, task, dueDate, completed, late } = taskObj;
     const date = new Date(dueDate);
 
     const day = String(date.getDate()).padStart(2, "0");
@@ -67,7 +67,7 @@ async function createUserTasksEmbed(userId, username) {
     const year = date.getFullYear();
     const due = `${day}/${month}/${year}`;
 
-    const fieldName = `${task}`;
+    const fieldName = `Task ID: ${taskID} - ${task}`;
     const fieldValue = `Due: ${due}\nCompleted: ${
       completed ? true : false
     }\nLate: ${late ? true : false}`;

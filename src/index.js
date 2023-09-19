@@ -76,15 +76,18 @@ setInterval(async () => {
             "INSERT OR REPLACE INTO notifiedClasses (classIdentifier, notifiedAt30, notifiedAt15) VALUES (?, 1, 0)",
             [classIdentifier]
           );
-        } else if (
-          timeDifference <= 15 &&
-          timeDifference >= 10 &&
-          !notifiedAt15
-        ) {
+          // TO DO: Review this and improve - it's a bit of a hack at the moment
+        } else if (timeDifference === 15 && !notifiedAt15) {
           // Send 15-10-minute notification and update database
           channel.send(
             `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
           );
+
+          db.run(
+            "INSERT OR REPLACE INTO notifiedClasses (classIdentifier, notifiedAt30, notifiedAt15) VALUES (?, 1, 1)",
+            [classIdentifier]
+          );
+
           // Delete the row as it's no longer needed today
           db.run("DELETE FROM notifiedClasses WHERE classIdentifier = ?", [
             classIdentifier,
