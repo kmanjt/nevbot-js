@@ -29,7 +29,7 @@ NevBot-JS is designed to help manage timetables and task reminders for DCU Compu
 2. Navigate to the project directory:
 
    ```bash
-   cd NEVBot-JS
+   cd nevbot-js
    ```
 
 3. Install dependencies:
