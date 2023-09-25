@@ -70,7 +70,7 @@ setInterval(async () => {
         if (timeDifference <= 30 && timeDifference >= 25 && !notifiedAt30) {
           // Send 30-minute notification and update database
           channel.send(
-            `@everyone ${classInfo.module} **starts in ${timeDifference} minutes at ${classInfo.building} room ${classInfo.room}**`
+            `@everyone ${classInfo.module} **starts in ${timeDifference} mins at ${classInfo.building} room ${classInfo.room}**`
           );
           db.run(
             "INSERT OR REPLACE INTO notifiedClasses (classIdentifier, notifiedAt30, notifiedAt15) VALUES (?, 1, 0)",
@@ -80,7 +80,7 @@ setInterval(async () => {
         } else if (timeDifference === 15 && !notifiedAt15) {
           // Send 15-10-minute notification and update database
           channel.send(
-            `@everyone ${classInfo.module} **starts in ${timeDifference} minutes at ${classInfo.building} room ${classInfo.room}**`
+            `@everyone ${classInfo.module} **starts in ${timeDifference} mins at ${classInfo.building} room ${classInfo.room}**`
           );
 
           db.run(
