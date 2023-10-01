@@ -70,7 +70,7 @@ setInterval(async () => {
         if (timeDifference <= 30 && timeDifference >= 25 && !notifiedAt30) {
           // Send 30-minute notification and update database
           channel.send(
-            `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
+            `@everyone ${classInfo.module} starts in ${timeDifference} mins at ${classInfo.building} room ${classInfo.room}`
           );
           db.run(
             "INSERT OR REPLACE INTO notifiedClasses (classIdentifier, notifiedAt30, notifiedAt15) VALUES (?, 1, 0)",
@@ -80,7 +80,7 @@ setInterval(async () => {
         } else if (timeDifference === 15 && !notifiedAt15) {
           // Send 15-10-minute notification and update database
           channel.send(
-            `@everyone Class ${classInfo.module} starts in ${timeDifference} minutes in building ${classInfo.building} room ${classInfo.room}`
+            `@everyone ${classInfo.module} starts in ${timeDifference} mins at ${classInfo.building} room ${classInfo.room}`
           );
 
           db.run(
@@ -163,14 +163,16 @@ function sendDailyReminders() {
                 `Sending overdue reminder to user ${userID} for task ${taskID}`
               );
               user.send(
-                `You have an overdue task: ${taskID} - ${taskDescription}. Please complete it as soon as possible. Type /reminders complete and input ${taskID} to mark is as complete.`
+                `You have an overdue task: ${taskID} - ${taskDescription}. It was due on: ${dueDate}. 
+                Please complete it as soon as possible. Type /reminders complete and input ${taskID} to mark is as complete.`
               );
             } else {
               console.log(
                 `Sending upcoming task reminder to user ${userID} for task ${taskID}`
               );
               user.send(
-                `You have a task due soon: ${taskID} - ${taskDescription}. Due date: ${dueDate}. Type /reminders complete and input ${taskID} to mark is as complete.`
+                `You have a task due soon: ${taskID} - ${taskDescription}. Due date: ${dueDate}. 
+                Type /reminders complete and input ${taskID} to mark is as complete.`
               );
             }
           }
