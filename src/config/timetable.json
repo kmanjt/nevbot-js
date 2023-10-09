@@ -81,6 +81,14 @@
       "building": "Henry Grattan Building",
       "room": "CG12"
     }
+    ,
+    "1400": {
+      "module": "CA304 - Computer Networks 2",
+      "duration": 180,
+      "type": "Lab",
+      "building": "McNulty Computer Labs",
+      "room": "L114, L128"
+    }
   },
   "Thursday": {
     "0900": {
