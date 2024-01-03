@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits } = require("discord.js");
+const { testServer } = require("../../config/config.json");
 
 module.exports = async (client) => {
   console.log(`${client.user.tag} is online.`);
@@ -7,7 +8,7 @@ module.exports = async (client) => {
   console.log("Global Commands:");
   globalCommands.forEach((cmd) => console.log(`- ${cmd.name}`));
 
-  const guild = await client.guilds.fetch("1151424341586751549");
+  const guild = await client.guilds.fetch(testServer);
   const guildCommands = await guild.commands.fetch();
   console.log(`Guild Commands for ${guild.name}:`);
   guildCommands.forEach((cmd) => console.log(`- ${cmd.name}`));
